@@ -146,3 +146,89 @@
             font-weight: 600;
             transition: opacity 0.2s;
         }
+
+        #colleagues-details a:last-child {
+            border-bottom: none;
+        }
+
+        #colleagues-details a:hover {
+            opacity: 0.75;
+        }
+
+        .btn-friend .arrow {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .btn-friend.active .arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <img src="https://github.com/pixelstrike56.png" alt="Pixelstrike56 Avatar" class="avatar">
+        <h1>Pixelstrike56</h1>
+        
+        <div class="bio">
+            <p>Bonjour ! 👋 voici mon tout premier <b>site</b> je suis au lycée en seconde er j'ai eu l'idée de faire un site ici cest cest la v1.2</p>
+            <div>
+              <span class="badge">2MTNE</span>
+                <span class="badge">Vers BAC PRO CIEL</span>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn btn-config" onclick="toggleConfig()">
+                <i class="fa-solid fa-laptop"></i> Ma Config PC
+            </button>
+            
+            <div id="config-details">
+                <b>Laptop :</b> Lenovo Thinkpad P52<br>
+                <b>CPU :</b> Intel Core i7-8750H<br>
+                <b>GPU :</b> Nvidia Quadro P1000<br>
+                <b>OS :</b> EndeavourOS
+            </div>
+
+            <button class="btn btn-friend" id="colleagues-btn" onclick="toggleColleagues()">
+                <i class="fa-solid fa-users"></i> Les sites de mes collègues
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </button>
+
+            <div id="colleagues-details">
+                <a href="https://artbysekai.fr" target="_blank">
+                    <i class="fa-solid fa-palette"></i> Le site de Sékai
+                </a>
+                <a href="https://interverti.fr" target="_blank">
+                    <i class="fa-solid fa-globe"></i> Le site de Interverti
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleConfig() {
+            var details = document.getElementById("config-details");
+            details.style.display = details.style.display === "block" ? "none" : "block";
+        }
+
+        function toggleColleagues() {
+            var details = document.getElementById("colleagues-details");
+            var btn = document.getElementById("colleagues-btn");
+            var isOpen = details.classList.contains("open");
+
+            if (isOpen) {
+                details.classList.remove("open");
+                btn.classList.remove("active");
+                setTimeout(() => { details.style.display = "none"; }, 300);
+            } else {
+                details.style.display = "block";
+                requestAnimationFrame(() => details.classList.add("open"));
+                btn.classList.add("active");
+            }
+        }
+    </script>
+</body>
+</html>
