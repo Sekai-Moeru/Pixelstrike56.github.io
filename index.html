@@ -324,10 +324,10 @@
         update() {
             this.x += Math.cos(this.angle) * this.speed;
             this.y += Math.sin(this.angle) * this.speed;
-            this.fade += 0.012;
+            this.fade += 0.005;
             if (this.x > canvas.width + 50 || this.x < -50 ||
-                this.y > canvas.height + 50 || this.y < -50 || this.fade >= 1) {
-                this.reset();
+            this.y > canvas.height + 50 || this.fade >= 1) {
+            this.reset();
             }
         }
 
