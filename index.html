@@ -248,18 +248,40 @@
         constructor() { this.reset(true); }
 
         reset(initial = false) {
-            // Naissent hors écran en haut à droite
-            this.x = Math.random() * canvas.width * 1.5;
-            this.y = initial ? Math.random() * canvas.height : -20;
-            this.len = Math.random() * 120 + 60;       // longueur trainée
-            this.speed = Math.random() * 4 + 3;        // vitesse
-            this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3; // ~45°
-            this.alpha = Math.random() * 0.7 + 0.3;
-            this.width = Math.random() * 1.5 + 0.5;
-            // Couleur : blanc/bleu/violet
-            const colors = ["255,255,255", "120,180,255", "160,100,255", "200,220,255"];
-            this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.fade = 0; // progression de disparition
+    // Choisit un bord aléatoire : haut, gauche ou droite
+    const side = Math.floor(Math.random() * 3); // 0=haut, 1=gauche, 2=droite
+
+    if (initial) {
+        // Au démarrage : position aléatoire partout sur l'écran
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+    } else if (side === 0) {
+        // Bord haut
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+    } else if (side === 1) {
+        // Bord gauche
+        this.x = -20;
+        this.y = Math.random() * canvas.height;
+    } else {
+        // Bord droit
+        this.x = canvas.width + 20;
+        this.y = Math.random() * canvas.height;
+    }
+
+    // Direction vers le centre de l'écran + légère variation
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const baseAngle = Math.atan2(centerY - this.y, centerX - this.x);
+    this.angle = baseAngle + (Math.random() - 0.5) * 0.8;
+
+    this.len = Math.random() * 120 + 60;
+    this.speed = Math.random() * 4 + 3;
+    this.alpha = Math.random() * 0.7 + 0.3;
+    this.width = Math.random() * 1.5 + 0.5;
+    const colors = ["255,255,255", "120,180,255", "160,100,255", "200,220,255"];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.fade = 0;
         }
 
         update() {
