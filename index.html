@@ -7,26 +7,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f6f8fa;
-            --card-bg: #ffffff;
-            --text-main: #1f2328;
-            --text-secondary: #636c76;
-            --accent-color: #0969da;
-            --btn-friend: #6c5ce7;
-            --border-color: #d0d7de;
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --btn-friend: #703cdd;
+            --border-color: #30363d;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0d1117;
-                --card-bg: #161b22;
-                --text-main: #c9d1d9;
-                --text-secondary: #8b949e;
-                --accent-color: #58a6ff;
-                --btn-friend: #703cdd;
-                --border-color: #30363d;
-            }
-        }
+        * { box-sizing: border-box; }
 
         body {
             background-color: var(--bg-color);
@@ -37,16 +27,29 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Canvas de fond */
+        #meteor-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .card {
-            background: var(--card-bg);
+            position: relative;
+            z-index: 1;
+            background: rgba(22, 27, 34, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 2.5rem;
             border-radius: 16px;
             border: 1px solid var(--border-color);
             text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             max-width: 450px;
             width: 90%;
         }
@@ -60,7 +63,7 @@
         }
 
         h1 { margin: 0.5rem 0; font-size: 1.8rem; }
-        
+
         .bio {
             line-height: 1.6;
             margin-bottom: 2.5rem;
@@ -99,14 +102,13 @@
         }
 
         .btn:active { transform: scale(0.98); }
-
         .btn-config { background: var(--text-main); color: var(--card-bg); }
         .btn-friend { background: var(--btn-friend); color: white; }
 
         #config-details {
             margin-top: 20px;
             padding: 15px;
-            background: rgba(0,0,0,0.05);
+            background: rgba(0,0,0,0.2);
             border-radius: 8px;
             font-size: 0.95rem;
             display: none;
@@ -114,16 +116,11 @@
             line-height: 1.6;
         }
 
-        /* Menu collègues */
         #colleagues-details {
-            margin-top: 0;
-            padding: 0 15px;
+            display: none;
             background: rgba(108, 92, 231, 0.08);
             border-radius: 8px;
             font-size: 0.95rem;
-            display: none;
-            text-align: left;
-            line-height: 1.6;
             overflow: hidden;
             max-height: 0;
             transition: max-height 0.3s ease, padding 0.3s ease;
@@ -147,13 +144,8 @@
             transition: opacity 0.2s;
         }
 
-        #colleagues-details a:last-child {
-            border-bottom: none;
-        }
-
-        #colleagues-details a:hover {
-            opacity: 0.75;
-        }
+        #colleagues-details a:last-child { border-bottom: none; }
+        #colleagues-details a:hover { opacity: 0.75; }
 
         .btn-friend .arrow {
             margin-left: auto;
@@ -168,70 +160,162 @@
 </head>
 <body>
 
-    <div class="card">
-        <img src="https://github.com/pixelstrike56.png" alt="Pixelstrike56 Avatar" class="avatar">
-        <h1>Pixelstrike56</h1>
-        
-        <div class="bio">
-            <p>Bonjour ! 👋 voici mon tout premier <b>site</b> je suis au lycée en seconde et j'ai eu l'idée de faire un site, ici cest la v2.1.</p>
-            <div>
-              <span class="badge">2MTNE</span>
-                <span class="badge">Vers BAC PRO CIEL</span>
-            </div>
-        </div>
+<canvas id="meteor-canvas"></canvas>
 
-        <div class="btn-container">
-            <button class="btn btn-config" onclick="toggleConfig()">
-                <i class="fa-solid fa-laptop"></i> Ma Config PC
-            </button>
-            
-            <div id="config-details">
-                <b>Laptop :</b> Lenovo Thinkpad P52<br>
-                <b>CPU :</b> Intel Core i7-8750H<br>
-                <b>GPU :</b> Nvidia Quadro P1000<br>
-                <b>OS :</b> Dualboot EndeavourOS x windows 11
-            </div>
+<div class="card">
+    <img src="https://github.com/pixelstrike56.png" alt="Pixelstrike56 Avatar" class="avatar">
+    <h1>Pixelstrike56</h1>
 
-            <button class="btn btn-friend" id="colleagues-btn" onclick="toggleColleagues()">
-                <i class="fa-solid fa-users"></i> Les sites de mes collègues
-                <i class="fa-solid fa-chevron-down arrow"></i>
-            </button>
-
-            <div id="colleagues-details">
-                <a href="https://artbysekai.fr" target="_blank">
-                    <i class="fa-solid fa-globe"></i> Le site de Sékai
-                </a>
-                <a href="https://interverti.fr" target="_blank">
-                    <i class="fa-solid fa-globe"></i> Le site de Interverti
-                </a>
-                <a href="https://gwer.site" target="_blank">
-                    <i class="fa-solid fa-globe"></i> Le site de zaq
-                </a>
-            </div>
+    <div class="bio">
+        <p>Bonjour ! 👋 voici mon tout premier <b>site</b> je suis au lycée en seconde er j'ai eu l'idée de faire un site ici cest cest la v3</p>
+        <div>
+            <span class="badge">2MTNE</span>
+            <span class="badge">Vers BAC PRO CIEL</span>
         </div>
     </div>
 
-    <script>
-        function toggleConfig() {
-            var details = document.getElementById("config-details");
-            details.style.display = details.style.display === "block" ? "none" : "block";
+    <div class="btn-container">
+        <button class="btn btn-config" onclick="toggleConfig()">
+            <i class="fa-solid fa-laptop"></i> Ma Config PC
+        </button>
+
+        <div id="config-details">
+            <b>Laptop :</b> Lenovo Thinkpad P52<br>
+            <b>CPU :</b> Intel Core i7-8750H<br>
+            <b>GPU :</b> Nvidia Quadro P1000<br>
+            <b>OS :</b> EndeavourOS
+        </div>
+
+        <button class="btn btn-friend" id="colleagues-btn" onclick="toggleColleagues()">
+            <i class="fa-solid fa-users"></i> Les sites de mes collègues
+            <i class="fa-solid fa-chevron-down arrow"></i>
+        </button>
+
+        <div id="colleagues-details">
+            <a href="https://artbysekai.fr" target="_blank">
+                <i class="fa-solid fa-palette"></i> Le site de Sékai
+            </a>
+            <a href="https://interverti.fr" target="_blank">
+                <i class="fa-solid fa-globe"></i> Le site de Interverti
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ── Menus toggle ──────────────────────────────────────────
+    function toggleConfig() {
+        var d = document.getElementById("config-details");
+        d.style.display = d.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleColleagues() {
+        var details = document.getElementById("colleagues-details");
+        var btn = document.getElementById("colleagues-btn");
+        var isOpen = details.classList.contains("open");
+        if (isOpen) {
+            details.classList.remove("open");
+            btn.classList.remove("active");
+            setTimeout(() => { details.style.display = "none"; }, 300);
+        } else {
+            details.style.display = "block";
+            requestAnimationFrame(() => details.classList.add("open"));
+            btn.classList.add("active");
+        }
+    }
+
+    // ── Fond météores ─────────────────────────────────────────
+    const canvas = document.getElementById("meteor-canvas");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Étoiles fixes en arrière-plan
+    const stars = Array.from({ length: 120 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.5 + 0.3,
+        alpha: Math.random() * 0.6 + 0.2
+    }));
+
+    // Classe Météore
+    class Meteor {
+        constructor() { this.reset(true); }
+
+        reset(initial = false) {
+            // Naissent hors écran en haut à droite
+            this.x = Math.random() * canvas.width * 1.5;
+            this.y = initial ? Math.random() * canvas.height : -20;
+            this.len = Math.random() * 120 + 60;       // longueur trainée
+            this.speed = Math.random() * 4 + 3;        // vitesse
+            this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3; // ~45°
+            this.alpha = Math.random() * 0.7 + 0.3;
+            this.width = Math.random() * 1.5 + 0.5;
+            // Couleur : blanc/bleu/violet
+            const colors = ["255,255,255", "120,180,255", "160,100,255", "200,220,255"];
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.fade = 0; // progression de disparition
         }
 
-        function toggleColleagues() {
-            var details = document.getElementById("colleagues-details");
-            var btn = document.getElementById("colleagues-btn");
-            var isOpen = details.classList.contains("open");
-
-            if (isOpen) {
-                details.classList.remove("open");
-                btn.classList.remove("active");
-                setTimeout(() => { details.style.display = "none"; }, 300);
-            } else {
-                details.style.display = "block";
-                requestAnimationFrame(() => details.classList.add("open"));
-                btn.classList.add("active");
+        update() {
+            this.x += Math.cos(this.angle) * this.speed;
+            this.y += Math.sin(this.angle) * this.speed;
+            this.fade += 0.012;
+            if (this.x > canvas.width + 50 || this.y > canvas.height + 50 || this.fade >= 1) {
+                this.reset();
             }
         }
-    </script>
+
+        draw() {
+            const opacity = this.alpha * (1 - this.fade);
+            const tailX = this.x - Math.cos(this.angle) * this.len;
+            const tailY = this.y - Math.sin(this.angle) * this.len;
+
+            const grad = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+            grad.addColorStop(0, `rgba(${this.color}, 0)`);
+            grad.addColorStop(1, `rgba(${this.color}, ${opacity})`);
+
+            ctx.beginPath();
+            ctx.moveTo(tailX, tailY);
+            ctx.lineTo(this.x, this.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = this.width;
+            ctx.lineCap = "round";
+            ctx.stroke();
+
+            // Point brillant à la tête
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.width * 1.2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.color}, ${opacity})`;
+            ctx.fill();
+        }
+    }
+
+    const meteors = Array.from({ length: 18 }, () => new Meteor());
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dessin des étoiles
+        stars.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200, 220, 255, ${s.alpha})`;
+            ctx.fill();
+        });
+
+        // Dessin des météores
+        meteors.forEach(m => { m.update(); m.draw(); });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+</script>
 </body>
 </html>
